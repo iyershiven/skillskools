@@ -1,171 +1,23 @@
-import type _class from "../models/class.ts";
 import { inngest } from "./index.ts";
-import Class from "../models/class.ts";
-import User from "../models/user.ts";
-import Timetable from "../models/timetable.ts";
-import Exam from "../models/exam.ts";
-import Submission from "../models/submission.ts";
-
 import { NonRetriableError } from "inngest";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
+import { supabaseAdmin } from "../config/supabase.ts";
 
-interface GenSettings {
-  startTime: string;
-  endTime: string;
-  periods: number;
-}
-
-// Your new function:
-export const generateTimeTable = inngest.createFunction(
-  { id: "Generate-Timetable" },
-  { event: "generate/timetable" }, //name
+export const generateHomework = inngest.createFunction(
+  { id: "Generate-Homework" },
+  { event: "homework/generate" },
   async ({ event, step }) => {
-    const { classId, academicYearId, settings } = event.data as {
-      classId: string;
-      academicYearId: string;
-      settings: GenSettings;
-    };
+    const { homeworkId, topic, subjectName, difficulty, count } = event.data;
 
-    const contextData = await step.run("fetch-class-context", async () => {
-      // fetch class
-      const classData = await Class.findById(classId).populate("subjects");
-      if (!classData) throw new NonRetriableError("Class not found");
-
-      // fetch teachers
-      const allTeacher = await User.find({ role: "teacher" });
-
-      // filter qualified teachers for class subjects
-      const classSubjectsIds = classData.subjects.map((sub) =>
-        sub._id.toString()
-      );
-
-      const qualifiedTeachers = allTeacher
-        .filter((teacher) => {
-          if (!teacher.teacherSubject) return false;
-          return teacher.teacherSubject.some((subId) =>
-            classSubjectsIds.includes(subId.toString())
-          );
-        })
-        .map((tea) => ({
-          id: tea._id,
-          name: tea.name,
-          subjects: tea.teacherSubject,
-        }));
-
-      const subjectsPayload = classData.subjects.map((sub: any) => ({
-        id: sub._id,
-        name: sub.name,
-        code: sub.code,
-      }));
-
-      // here we should check if we have teachers and subjects
-      if (subjectsPayload.length === 0 || qualifiedTeachers.length === 0)
-        throw new NonRetriableError(
-          "No Subjects or Teachers assigned to these class"
-        );
-
-      return {
-        className: classData.name,
-        subjects: subjectsPayload,
-        teachers: qualifiedTeachers,
-      };
-    });
-
-    // generate timetable logic would go here
-    const aiSchedule = await step.run("generate-timetable-logic", async () => {
-      const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-      if (!apiKey) {
-        throw new NonRetriableError("GOOGLE_GENERATIVE_AI_API_KEY is missing");
-      }
-
-      const allTimetables = await Timetable.find({
-        academicYear: academicYearId,
-      });
-
-      const prompt = `
-        You are a school scheduler. Generate a weekly timetable (Monday to Friday).
-
-        CONTEXT:
-        - Class: ${contextData.className}
-        - Hours: ${settings.startTime} to ${settings.endTime} (${
-        settings.periods
-      } periods/day).
-
-        RESOURCES:
-        - Subjects: ${JSON.stringify(contextData.subjects)}
-        - Teachers: ${JSON.stringify(contextData.teachers)}
-        - Other Timetables: ${JSON.stringify(allTimetables)}
-
-        STRICT RULES:
-        1. Assign a Teacher to every Subject period.
-        2. Teacher MUST have the subject ID in their list.
-        3. Break Time/Free Period after every 2 periods(10 minutes), Lunch Time after 5 periods(at 12:00)(30 minutes).
-        4. Avoid clashes with other classes(teacher can't be in two classes at the same time).
-        5. Output strict JSON only. Schema:
-           {
-             "schedule": [
-               {
-                 "day": "Monday",
-                 "periods": [
-                   { "subject": "SUBJECT_ID", "teacher": "TEACHER_ID", "startTime": "HH:MM", "endTime": "HH:MM" }
-                 ]
-               }
-             ]
-           }
-      `;
-
-      const google = createGoogleGenerativeAI({
-        apiKey,
-      });
-
-      // I will show you how to get one if these does not work for you
-      const activeModel = google("gemini-3-flash-preview");
-
-      const { text } = await generateText({
-        prompt,
-        model: activeModel,
-      });
-
-      const cleanJSON = text.replace(/```json/g, "").replace(/```/g, "");
-      return JSON.parse(cleanJSON);
-    });
-    // now let save
-    await step.run("save-timetable", async () => {
-      // Delete existing to avoid duplicates
-      // we should also delete any timetable assigned or generate for these class
-      await Timetable.findOneAndDelete({
-        class: classId,
-        academicYear: academicYearId,
-      });
-      await Timetable.create({
-        class: classId,
-        academicYear: academicYearId,
-        schedule: aiSchedule.schedule,
-      });
-
-      return { success: true, classId };
-    });
-    return { message: "Timetable generated successfully" };
-  }
-);
-
-// Your new function:
-export const generateExam = inngest.createFunction(
-  { id: "Generate-Exam" },
-  { event: "exam/generate" }, //name
-  async ({ event, step }) => {
-    const { examId, topic, subjectName, difficulty, count } = event.data;
-
-    // generate timetable logic would go here
-    const aiExam = await step.run("generate-exam-logic", async () => {
+    const aiQuestions = await step.run("generate-homework-logic", async () => {
       const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
       if (!apiKey) {
         throw new NonRetriableError("GOOGLE_GENERATIVE_AI_API_KEY is missing");
       }
 
       const prompt = `
-        You are a strict teacher. Create a JSON array of ${count} multiple-choice questions for a high school exam.
+        You are a strict teacher. Create a JSON array of ${count} multiple-choice questions for a high school homework assignment.
 
         CONTEXT:
         - Subject: ${subjectName}
@@ -175,107 +27,145 @@ export const generateExam = inngest.createFunction(
         STRICT JSON SCHEMA (Array of Objects):
         [
           {
-            "questionText": "Question string",
-            "type": "MCQ",
+            "question_text": "Question string",
+            "question_type": "mcq",
             "options": ["Option A", "Option B", "Option C", "Option D"],
-            "correctAnswer": "The exact string of the correct option",
-            "points": 1
+            "answer_key": "The exact string of the correct option",
+            "marks": 1,
+            "difficulty": "${difficulty}"
           }
         ]
 
         RULES:
         1. Output ONLY raw JSON. No Markdown.
-        2. Ensure correct answer matches one of the options exactly.
+        2. Ensure answer_key matches one of the options exactly.
       `;
 
-      const google = createGoogleGenerativeAI({
-        apiKey,
-      });
-
-      // I will show you how to get one if these does not work for you
+      const google = createGoogleGenerativeAI({ apiKey });
       const activeModel = google("gemini-3-flash-preview");
 
-      const { text } = await generateText({
-        prompt,
-        model: activeModel,
-      });
-
-      // Sanitize JSON
-      const cleanJson = text
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-        .trim();
+      const { text } = await generateText({ prompt, model: activeModel });
+      const cleanJson = text.replace(/```json/g, "").replace(/```/g, "").trim();
       return JSON.parse(cleanJson);
     });
-    // now let save
-    await step.run("save-exam", async () => {
-      const exam = await Exam.findById(examId);
 
-      if (!exam) {
-        throw new NonRetriableError(`Exam ${examId} not found`);
+    await step.run("save-homework", async () => {
+      const { data: homework, error: fetchError } = await supabaseAdmin
+        .from("homework")
+        .select("school_id")
+        .eq("id", homeworkId)
+        .single();
+
+      if (fetchError || !homework) {
+        throw new NonRetriableError(`Homework ${homeworkId} not found`);
       }
 
-      // Update the exam with the new questions
-      exam.questions = aiExam;
-      exam.isActive = false; // Keep it inactive until teacher reviews it
+      // Map ai questions to table structure
+      const questionsToInsert = aiQuestions.map((q: any) => ({
+        school_id: homework.school_id,
+        homework_id: homeworkId,
+        question_text: q.question_text,
+        question_type: "mcq",
+        options: q.options,
+        answer_key: q.answer_key,
+        marks: q.marks,
+        difficulty: q.difficulty || "medium",
+      }));
 
-      await exam.save();
+      const { error: insertError } = await supabaseAdmin
+        .from("homework_questions")
+        .insert(questionsToInsert);
 
-      return { success: true, count: aiExam.length };
+      if (insertError) {
+        throw new NonRetriableError(`Failed to save questions: ${insertError.message}`);
+      }
+
+      return { success: true, count: aiQuestions.length };
     });
-    return { message: "Exam generated successfully" };
+
+    return { message: "Homework generated successfully" };
   }
 );
 
-// handle submission inside inngest
-// Important because we don't want the student's submission to be have issues
-// with server timeouts or other problems
-export const handleExamSubmission = inngest.createFunction(
-  { id: "Handle-Exam-Submission" },
-  { event: "exam/submit" }, //name
+export const handleHomeworkSubmission = inngest.createFunction(
+  { id: "Handle-Homework-Submission" },
+  { event: "homework/submit" },
   async ({ event, step }) => {
-    const { examId, studentId, answers } = event.data;
+    const { homeworkId, studentId, schoolId, answers } = event.data;
 
-    await step.run("process-exam-submission", async () => {
+    await step.run("process-homework-submission", async () => {
       // 1. Check if already submitted
-      const existingSubmission = await Submission.findOne({
-        exam: examId,
-        student: studentId,
-      });
+      const { data: existingSubmission } = await supabaseAdmin
+        .from("homework_submissions")
+        .select("id")
+        .eq("homework_id", homeworkId)
+        .eq("student_id", studentId)
+        .single();
+
       if (existingSubmission) {
-        throw new NonRetriableError("Exam already submitted");
+        throw new NonRetriableError("Homework already submitted");
       }
 
-      // 2. Fetch full exam (with answers)
-      const exam = await Exam.findById(examId).select(
-        "+questions.correctAnswer"
-      );
-      if (!exam) {
-        throw new NonRetriableError(`Exam ${examId} not found`);
+      // 2. Fetch questions to calculate score
+      const { data: questions } = await supabaseAdmin
+        .from("homework_questions")
+        .select("id, answer_key, marks")
+        .eq("homework_id", homeworkId);
+
+      if (!questions) {
+        throw new NonRetriableError(`Questions not found for homework ${homeworkId}`);
       }
 
-      // 3. Calculate Score
       let score = 0;
       let totalPoints = 0;
+      const studentAnswersToInsert: any[] = [];
 
-      exam.questions.forEach((question) => {
-        totalPoints += question.points;
-        const studentAns = answers.find(
-          (a: any) => a.questionId === question._id.toString()
-        );
-        if (studentAns && studentAns.answer === question.correctAnswer) {
-          score += question.points;
-        }
+      // Create submission first to get ID
+      const { data: submission, error: submissionError } = await supabaseAdmin
+        .from("homework_submissions")
+        .insert({
+          school_id: schoolId,
+          homework_id: homeworkId,
+          student_id: studentId,
+          status: "submitted",
+          score: 0 // Will update after grading
+        })
+        .select()
+        .single();
+
+      if (submissionError || !submission) {
+        throw new NonRetriableError("Failed to create submission record");
+      }
+
+      questions.forEach((question) => {
+        totalPoints += question.marks;
+        const studentAns = answers.find((a: any) => a.questionId === question.id);
+        const isCorrect = studentAns && studentAns.answer === question.answer_key;
+        
+        const earnedScore = isCorrect ? question.marks : 0;
+        score += earnedScore;
+
+        studentAnswersToInsert.push({
+          school_id: schoolId,
+          submission_id: submission.id,
+          question_id: question.id,
+          student_answer: studentAns ? studentAns.answer : null,
+          ai_score: earnedScore,
+          ai_feedback: isCorrect ? "Correct!" : "Incorrect."
+        });
       });
 
-      // 4. Save Submission
-      await Submission.create({
-        exam: examId,
-        student: studentId,
-        answers,
-        score,
-      });
+      // Insert answers
+      await supabaseAdmin.from("student_answers").insert(studentAnswersToInsert);
+
+      // Update total score on submission
+      await supabaseAdmin
+        .from("homework_submissions")
+        .update({ score })
+        .eq("id", submission.id);
+
     });
-    return { message: "Exam submitted successfully" };
+
+    return { message: "Homework submitted and graded successfully" };
   }
 );

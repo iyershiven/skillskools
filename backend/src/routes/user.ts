@@ -1,7 +1,4 @@
 import express from "express";
-
-const userRoutes = express.Router();
-
 import {
   register,
   login,
@@ -13,32 +10,30 @@ import {
 } from "../controllers/user.ts";
 import { protect, authorize } from "../middleware/auth.ts";
 
-// make sure to protect to get access to the user token
+const userRoutes = express.Router();
+
+// school_admin and super_admin can create users
 userRoutes.post(
   "/register",
   protect,
-  authorize(["admin", "teacher"]),
+  authorize(["super_admin", "school_admin"]),
   register
 );
 userRoutes.post("/login", login);
 userRoutes.post("/logout", logoutUser);
-userRoutes.get("/profile", protect, getUserProfile); // Get User Profile
-// teacher should be able to fetch all students
-userRoutes.get("/", protect, authorize(["admin", "teacher"]), getUsers);
-// here you can use either put or patch
+userRoutes.get("/profile", protect, getUserProfile);
+userRoutes.get("/", protect, authorize(["super_admin", "school_admin", "teacher"]), getUsers);
 userRoutes.put(
   "/update/:id",
   protect,
-  authorize(["admin", "teacher"]),
+  authorize(["super_admin", "school_admin"]),
   updateUser
 );
 userRoutes.delete(
   "/delete/:id",
   protect,
-  authorize(["admin", "teacher"]),
+  authorize(["super_admin", "school_admin"]),
   deleteUser
 );
 
 export default userRoutes;
-
-// next we protect routes, also add rolebased access

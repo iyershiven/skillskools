@@ -11,18 +11,18 @@ const subjectRouter = express.Router();
 
 subjectRouter
   .route("/create")
-  .post(protect, authorize(["admin"]), createSubject);
+  .post(protect, authorize(["school_admin"]), createSubject);
 
 subjectRouter
   .route("/")
-  .get(protect, authorize(["admin", "teacher"]), getAllSubjects);
+  .get(protect, authorize(["school_admin", "teacher"]), getAllSubjects);
 
 subjectRouter
   .route("/delete/:id")
-  .delete(protect, authorize(["admin"]), deleteSubject);
+  .delete(protect, authorize(["school_admin"]), deleteSubject);
 
 subjectRouter
   .route("/update/:id")
-  .patch(protect, authorize(["admin"]), updateSubject);
+  .patch(protect, authorize(["school_admin"]), updateSubject);
 
 export default subjectRouter;

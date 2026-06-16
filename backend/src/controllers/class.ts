@@ -1,32 +1,48 @@
-import { type Request, type Response } from "express";
-import Class from "../models/class.ts";
-import { logActivity } from "../utils/activitieslog.ts";
+import { type Response } from "express";
+import { supabaseAdmin } from "../config/supabase.ts";
+import type { AuthRequest } from "../middleware/auth.ts";
 
 // @desc    Create a new Class
 // @route   POST /api/classes
 // @access  Private/Admin
-export const createClass = async (req: Request, res: Response) => {
+export const createClass = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { name, academicYear, classTeacher, capacity } = req.body;
+    const { name, grade, section } = req.body;
+    const schoolId = req.user?.role === "super_admin" ? req.body.schoolId : req.user?.school_id;
 
-    const existingClass = await Class.findOne({ name, academicYear });
-    if (existingClass) {
-      return res.status(400).json({
-        message:
-          "Class with this name already exists for the specified academic year.",
-      });
+    if (!name || !grade || !section || !schoolId) {
+      res.status(400).json({ message: "name, grade, section, and schoolId are required" });
+      return;
     }
 
-    const newClass = await Class.create({
-      name,
-      academicYear,
-      classTeacher,
-      capacity,
-    });
-    await logActivity({
-      userId: (req as any).user.id,
-      action: `Created new class: ${newClass.name}`,
-    });
+    const { data: existingClass, error: findError } = await supabaseAdmin
+      .from("classes")
+      .select("id")
+      .eq("class_name", name)
+      .eq("school_id", schoolId)
+      .maybeSingle();
+
+    if (existingClass) {
+      res.status(400).json({ message: "Class with this name already exists in this school." });
+      return;
+    }
+
+    const { data: newClass, error } = await supabaseAdmin
+      .from("classes")
+      .insert({
+        class_name: name,
+        school_id: schoolId,
+        grade,
+        section,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      res.status(400).json({ message: "Failed to create class", error: error.message });
+      return;
+    }
+
     res.status(201).json(newClass);
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
@@ -36,37 +52,43 @@ export const createClass = async (req: Request, res: Response) => {
 // @desc    Get All Classes
 // @route   GET /api/classes
 // @access  Private
-export const getAllClasses = async (req: Request, res: Response) => {
+export const getAllClasses = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // 1. Parse Query Parameters
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const search = req.query.search as string;
 
-    // 2. Build Search Query (Case-insensitive regex on Name)
-    const query: any = {};
-    if (search) {
-      query.name = { $regex: search, $options: "i" };
+    let query = supabaseAdmin.from("classes").select(`
+      *,
+      schools ( name )
+    `, { count: "exact" });
+
+    // Restrict to user's school if not super_admin
+    if (req.user?.role !== "super_admin") {
+      query = query.eq("school_id", req.user?.school_id);
     }
 
-    // 3. Execute Query (Count & Find)
-    const [total, classes] = await Promise.all([
-      Class.countDocuments(query),
-      Class.find(query)
-        .populate("academicYear", "name")
-        .populate("classTeacher", "name email")
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit),
-    ]);
+    if (search) {
+      query = query.ilike("class_name", `%${search}%`);
+    }
 
-    // 4. Return Data + Pagination Meta
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to).order("created_at", { ascending: false });
+
+    const { data: classes, count, error } = await query;
+
+    if (error) {
+      res.status(400).json({ message: "Failed to fetch classes", error: error.message });
+      return;
+    }
+
     res.json({
       classes,
       pagination: {
-        total,
+        total: count || 0,
         page,
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil((count || 0) / limit),
       },
     });
   } catch (error) {
@@ -77,28 +99,30 @@ export const getAllClasses = async (req: Request, res: Response) => {
 // @desc    Update Class
 // @route   PUT /api/classes/:id
 // @access  Private/Admin
-export const updateClass = async (req: Request, res: Response) => {
+export const updateClass = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const classId = req.params.id;
-    const { name, academicYear } = req.body;
+    const { name, grade, section } = req.body;
 
-    const existingClass = await Class.findOne({
-      _id: { $ne: classId },
-    });
-    if (existingClass) {
-      const updatedClass = await Class.findByIdAndUpdate(classId, req.body, {
-        new: true,
-        runValidators: true,
-      });
-      if (!updatedClass) {
-        return res.status(404).json({ message: "Class not found" });
-      }
-      await logActivity({
-        userId: (req as any).user.id,
-        action: `Updated class: ${updatedClass.name}`,
-      });
-      return res.status(200).json(updatedClass);
+    const updateData: any = {};
+    if (name) updateData.class_name = name;
+    if (grade) updateData.grade = grade;
+    if (section) updateData.section = section;
+    updateData.updated_at = new Date().toISOString();
+
+    const { data: updatedClass, error } = await supabaseAdmin
+      .from("classes")
+      .update(updateData)
+      .eq("id", classId)
+      .select()
+      .single();
+
+    if (error || !updatedClass) {
+      res.status(404).json({ message: "Class not found" });
+      return;
     }
+
+    res.status(200).json(updatedClass);
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
   }
@@ -107,17 +131,20 @@ export const updateClass = async (req: Request, res: Response) => {
 // @desc    Delete Class
 // @route   DELETE /api/classes/:id
 // @access  Private/Admin
-export const deleteClass = async (req: Request, res: Response) => {
+export const deleteClass = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const deletedClass = await Class.findByIdAndDelete(req.params.id);
-    const userId = (req as any).user._id;
-    await logActivity({
-      userId,
-      action: `Deleted class: ${deletedClass?.name}`,
-    });
-    if (!deletedClass) {
-      return res.status(404).json({ message: "Class not found" });
+    const classId = req.params.id;
+    
+    const { error } = await supabaseAdmin
+      .from("classes")
+      .delete()
+      .eq("id", classId);
+
+    if (error) {
+      res.status(404).json({ message: "Class not found or failed to delete" });
+      return;
     }
+
     res.json({ message: "Class removed" });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
