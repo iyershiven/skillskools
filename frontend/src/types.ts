@@ -1,84 +1,147 @@
-export type UserRole = "admin" | "teacher" | "student" | "parent";
+// ─── Core User Types ──────────────────────────────────────────────────────────
+export type UserRole =
+  | "super_admin"
+  | "school_admin"
+  | "teacher"
+  | "student"
+  | "parent";
 
-export interface pagination {
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  schoolId?: string | null;
+  isActive: boolean;
+  studentClass?: ClassType | string | null;
+  grade?: string | null;
+  teacherSubjects?: Subject[];
+  children?: User[];
+}
+
+// ─── School ───────────────────────────────────────────────────────────────────
+export type SubscriptionPlan = "starter" | "growth" | "enterprise";
+export type SubscriptionStatus = "active" | "inactive" | "trial" | "expired";
+
+export interface School {
+  _id: string;
+  name: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  board: string;
+  contactEmail: string;
+  contactPhone?: string;
+  isActive: boolean;
+  subscriptionPlan: SubscriptionPlan;
+  subscriptionStatus: SubscriptionStatus;
+  subscriptionEndDate?: string;
+  maxStudents: number;
+}
+
+// ─── Class & Subject ──────────────────────────────────────────────────────────
+export interface ClassType {
+  _id: string;
+  schoolId: string;
+  name: string;
+  grade: string;
+  section: string;
+  classTeacher?: User;
+  subjects: Subject[];
+  students: User[];
+  capacity: number;
+  isActive: boolean;
+}
+
+export interface Subject {
+  _id: string;
+  schoolId: string;
+  name: string;
+  code: string;
+  grade?: string;
+  teachers: User[];
+  isActive: boolean;
+}
+
+// ─── Homework ─────────────────────────────────────────────────────────────────
+export type QuestionType = "mcq" | "short_answer" | "long_answer" | "fill_blank";
+export type HomeworkStatus = "draft" | "assigned" | "closed";
+export type DifficultyLevel = "easy" | "medium" | "hard";
+
+export interface HomeworkQuestion {
+  _id: string;
+  homeworkId: string;
+  questionText: string;
+  questionType: QuestionType;
+  options?: string[];
+  answerKey: string;
+  marks: number;
+  difficulty: DifficultyLevel;
+  order: number;
+}
+
+export interface Homework {
+  _id: string;
+  schoolId: string;
+  classId: ClassType | string;
+  subjectId: Subject | string;
+  teacherId: User | string;
+  title: string;
+  description?: string;
+  chapter?: string;
+  dueDate: string;
+  difficulty: DifficultyLevel;
+  totalMarks: number;
+  status: HomeworkStatus;
+  questions?: HomeworkQuestion[];
+  createdAt: string;
+}
+
+// ─── Submission ───────────────────────────────────────────────────────────────
+export type SubmissionStatus =
+  | "not_started"
+  | "in_progress"
+  | "submitted"
+  | "reviewed";
+
+export interface StudentAnswer {
+  _id: string;
+  questionId: string;
+  studentAnswer: string;
+  aiSuggestedScore?: number;
+  aiFeedback?: string;
+  teacherScore?: number;
+  teacherFeedback?: string;
+  finalScore: number;
+}
+
+export interface HomeworkSubmission {
+  _id: string;
+  homeworkId: Homework | string;
+  studentId: User | string;
+  status: SubmissionStatus;
+  submittedAt?: string;
+  totalScore: number;
+  aiChecked: boolean;
+  teacherReviewed: boolean;
+  teacherRemarks?: string;
+  answers?: StudentAnswer[];
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+export interface Pagination {
   total: number;
   page: number;
   pages: number;
   limit: number;
 }
 
-export interface user {
-  _id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  studentClass?: Class;
-  teacherSubjects?: subject[];
-}
-
+// ─── Legacy types (kept for backward compat) ──────────────────────────────────
+export type { User as user };
 export interface academicYear {
   _id: string;
-  name: string; // "2024-2025"
-  fromYear: Date; // "2024-09-01"
-  toYear: Date; // "2025-06-30"
-  isCurrent: boolean; // true/false
-}
-
-export interface Class {
-  _id: string;
-  name: string; // e.g., "Grade 10"
-  academicYear: academicYear; // Link to "2024-2025"
-  classTeacher: user; // The main teacher in charge
-  subjects: subject[]; // List of subjects taught in this class
-  students: user[]; // List of students enrolled
-  capacity: number; // Max students allowed (optional)
-}
-
-export interface subject {
-  _id: string;
-  name: string; // "Mathematics"
-  code: string; // "MATH101"
-  teacher?: user[]; // Default teacher for this subject
-  isActive: boolean; // Indicates if the subject is currently active
-}
-
-export interface question {
-  _id: string;
-  questionText: string;
-  type: string;
-  options: string[]; // Array of strings e.g. ["A", "B", "C", "D"]
-  correctAnswer: string; // Hidden from students in default queries
-  points: number;
-}
-
-export interface exam {
-  _id: string;
-  title: string;
-  subject: subject;
-  class: Class;
-  teacher: user;
-  duration: number; // in minutes
-  questions: question[];
-  dueDate: Date;
-  isActive: boolean;
-}
-
-export interface Submission {
-  _id: string;
-  score: number;
-  exam: exam; // The populated exam with answers
-  answers: { questionId: string; answer: string }[];
-}
-
-export interface period {
-  _id: string;
-  subject: { _id: string; name: string; code: string };
-  teacher: { _id: string; name: string };
-  startTime: string; // e.g., "08:00"
-  endTime: string; // e.g., "08:45"
-}
-
-export interface schedule {
-  day: string; // "Monday", "Tuesday", etc.
-  periods: period[];
+  name: string;
+  fromYear: Date;
+  toYear: Date;
+  isCurrent: boolean;
 }

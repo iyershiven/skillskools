@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Menu, X, Brain } from "lucide-react";
 import { Link } from "react-router";
 
 const Navbar = () => {
@@ -14,63 +14,76 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navLinks = [
+    { href: "#features", label: "Features" },
+    { href: "#how-it-works", label: "How It Works" },
+    { href: "#pricing", label: "Pricing" },
+    { href: "#faq", label: "FAQ" },
+  ];
+
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 bg-background ${scrolled ? " backdrop-blur-md py-3 shadow-lg" : "bg-transparent py-5"}`}
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-md py-3 shadow-lg border-b border-gray-100"
+          : "bg-transparent py-5"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
+          {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="bg-[#3ecf8e] p-1.5 rounded-lg">
-              <GraduationCap className="text-black w-6 h-6" />
+            <div className="bg-gradient-to-br from-[#2563eb] to-[#16a34a] p-2 rounded-xl shadow-md">
+              <Brain className="text-white w-5 h-5" />
             </div>
-            <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              EDU<span className="text-[#3ecf8e]">NEXUS</span>
+            <span className="text-xl font-extrabold tracking-tight text-gray-900">
+              ClassMind<span className="text-[#2563eb]"> AI</span>
             </span>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-6">
-            <a
-              href="#home"
-              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
+          <div className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-gray-600 hover:text-[#2563eb] transition-colors font-medium text-sm"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center space-x-3">
+            <Link
+              to="/login"
+              className="text-gray-700 hover:text-[#2563eb] font-medium text-sm transition-colors"
             >
-              Overview
-            </a>
+              School Login
+            </Link>
             <a
-              href="#programs"
-              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
+              href="#demo"
+              className="bg-[#2563eb] text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-[#1d4ed8] transition-all transform hover:scale-105 shadow-md shadow-blue-500/20"
             >
-              Programs
+              Book Demo
             </a>
-            <a
-              href="#stats"
-              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
-            >
-              Research
-            </a>
-            <a
-              href="#assistant"
-              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
-            >
-              AI Guide
-            </a>
-            <button className="bg-[#3ecf8e] text-black px-5 py-2 rounded-md font-bold hover:bg-[#34b27b] transition-all transform hover:scale-105">
-              Apply Now
-            </button>
           </div>
 
           {/* Mobile button */}
-          <div className="md:hidden flex items-center space-x-4">
+          <div className="md:hidden flex items-center space-x-3">
+            <a
+              href="#demo"
+              className="bg-[#2563eb] text-white px-4 py-2 rounded-lg font-semibold text-sm"
+            >
+              Book Demo
+            </a>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-600 dark:text-gray-300"
+              className="text-gray-600 p-1"
+              aria-label="Toggle menu"
             >
-              {isOpen ? (
-                <X className="w-8 h-8" />
-              ) : (
-                <Menu className="w-8 h-8" />
-              )}
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -78,34 +91,25 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-[#1c1c1c] border-b border-gray-200 dark:border-gray-800 px-4 pt-2 pb-6 space-y-4">
-          <a
-            href="#home"
-            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
-          >
-            Overview
-          </a>
-          <a
-            href="#programs"
-            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
-          >
-            Programs
-          </a>
-          <a
-            href="#stats"
-            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
-          >
-            Research
-          </a>
-          <a
-            href="#assistant"
-            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
-          >
-            AI Guide
-          </a>
-          <button className="w-full bg-[#3ecf8e] text-black px-5 py-3 rounded-md font-bold text-center">
-            Apply Now
-          </button>
+        <div className="md:hidden bg-white border-b border-gray-100 px-4 pt-4 pb-6 space-y-4 shadow-lg">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-700 hover:text-[#2563eb] text-base font-medium transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="pt-2 border-t border-gray-100">
+            <Link
+              to="/login"
+              className="block text-gray-700 hover:text-[#2563eb] text-base font-medium py-1"
+            >
+              School Login
+            </Link>
+          </div>
         </div>
       )}
     </nav>

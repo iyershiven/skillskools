@@ -1,195 +1,129 @@
-import {
-  GraduationCap,
-  Github,
-  Twitter,
-  Linkedin,
-  ArrowUp,
-} from "lucide-react";
+import { Brain, Twitter, Linkedin, Mail, ArrowUp } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="pt-20 pb-10 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    <footer className="pt-20 pb-10 border-t border-gray-100 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          <div className="space-y-6">
+          {/* Brand column */}
+          <div className="space-y-5">
             <div className="flex items-center space-x-2">
-              <div className="bg-[#3ecf8e] p-1.5 rounded-lg">
-                <GraduationCap className="text-black w-6 h-6" />
+              <div className="bg-gradient-to-br from-[#2563eb] to-[#16a34a] p-2 rounded-xl shadow-sm">
+                <Brain className="text-white w-5 h-5" />
               </div>
-              <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white uppercase">
-                Edunexus
+              <span className="text-lg font-extrabold tracking-tight text-gray-900">
+                ClassMind<span className="text-[#2563eb]"> AI</span>
               </span>
             </div>
-            <p className="text-gray-600 dark:text-gray-500 leading-relaxed">
-              Redefining higher education through technology, innovation, and
-              global connectivity. Join the frontier.
+            <p className="text-gray-500 text-sm leading-relaxed">
+              The AI-powered learning and homework platform for Indian schools. Built for CBSE, ICSE, and State Board schools.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-white dark:bg-[#1c1c1c] border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:bg-[#3ecf8e] hover:text-black transition-all text-gray-500 dark:text-gray-400 shadow-sm"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-white dark:bg-[#1c1c1c] border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:bg-[#3ecf8e] hover:text-black transition-all text-gray-500 dark:text-gray-400 shadow-sm"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-white dark:bg-[#1c1c1c] border border-gray-200 dark:border-gray-800 flex items-center justify-center hover:bg-[#3ecf8e] hover:text-black transition-all text-gray-500 dark:text-gray-400 shadow-sm"
-              >
-                <Github className="w-5 h-5" />
-              </a>
+            <div className="flex space-x-3">
+              {[Twitter, Linkedin, Mail].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-9 h-9 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-all text-gray-500 group"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Platform links */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-lg">
-              Academics
+            <h4 className="text-gray-900 font-bold mb-5 text-sm uppercase tracking-wider">
+              Platform
             </h4>
-            <ul className="space-y-4">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Undergraduate
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Postgraduate
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Executive Education
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Online Courses
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Scholarships
-                </a>
-              </li>
+            <ul className="space-y-3">
+              {[
+                "Features",
+                "How It Works",
+                "AI Tutor",
+                "Teacher Tools",
+                "School Analytics",
+                "Parent View",
+              ].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#features"
+                    className="text-gray-500 text-sm hover:text-blue-600 transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* School links */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-lg">
-              Resources
+            <h4 className="text-gray-900 font-bold mb-5 text-sm uppercase tracking-wider">
+              For Schools
             </h4>
-            <ul className="space-y-4">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Campus Map
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Library
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Research Portal
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Career Center
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 dark:text-gray-500 hover:text-[#3ecf8e] transition-colors"
-                >
-                  Alumni Network
-                </a>
-              </li>
+            <ul className="space-y-3">
+              {[
+                "Pricing",
+                "Book a Demo",
+                "30-Day Free Trial",
+                "Onboarding Guide",
+                "Support",
+                "FAQs",
+              ].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#pricing"
+                    className="text-gray-500 text-sm hover:text-blue-600 transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Demo CTA */}
           <div>
-            <h4 className="text-gray-900 dark:text-white font-bold mb-6 text-lg">
-              Newsletter
+            <h4 className="text-gray-900 font-bold mb-5 text-sm uppercase tracking-wider">
+              Book a Demo
             </h4>
-            <p className="text-gray-600 dark:text-gray-500 mb-6">
-              Stay updated with the latest research breakthroughs and campus
-              news.
+            <p className="text-gray-500 text-sm mb-4 leading-relaxed">
+              See ClassMind AI in action with a live walkthrough for your school leadership team.
             </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="bg-white dark:bg-[#1c1c1c] border border-gray-200 dark:border-gray-800 rounded-l-lg px-4 py-3 text-gray-900 dark:text-white focus:outline-none w-full"
-              />
-              <button className="bg-[#3ecf8e] text-black px-4 py-3 rounded-r-lg font-bold hover:bg-[#34b27b] transition-colors">
-                Join
-              </button>
-            </div>
+            <a
+              href="#demo"
+              id="footer-book-demo"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-semibold px-5 py-3 rounded-xl hover:bg-blue-700 transition-all"
+            >
+              Schedule a Demo
+            </a>
+            <p className="text-xs text-gray-400 mt-3">
+              📍 Serving schools across India
+            </p>
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
-          <p>© 2025 Edunexus University. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a
-              href="#"
-              className="hover:text-gray-900 dark:hover:text-white transition-colors"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className="hover:text-gray-900 dark:hover:text-white transition-colors"
-            >
-              Terms of Service
-            </a>
-            <a
-              href="#"
-              className="hover:text-gray-900 dark:hover:text-white transition-colors"
-            >
-              Cookie Settings
-            </a>
+        {/* Bottom bar */}
+        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400 gap-4">
+          <p>© 2025 ClassMind AI. All rights reserved.</p>
+          <div className="flex space-x-6">
+            {["Privacy Policy", "Terms of Service", "Data Protection"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="hover:text-gray-700 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
           </div>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="mt-6 md:mt-0 p-3 rounded-full bg-white dark:bg-[#1c1c1c] border border-gray-200 dark:border-gray-800 hover:border-[#3ecf8e] transition-all group shadow-sm"
+            className="p-2.5 rounded-full bg-gray-50 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
+            aria-label="Back to top"
           >
-            <ArrowUp className="w-5 h-5 group-hover:text-[#3ecf8e] text-gray-400" />
+            <ArrowUp className="w-4 h-4 group-hover:text-blue-600 text-gray-400" />
           </button>
         </div>
       </div>

@@ -1,104 +1,190 @@
-import { ArrowRight, ChevronRight, Play } from "lucide-react";
+import { ArrowRight, Play, CheckCircle, Sparkles, Users, BookOpen } from "lucide-react";
+
+const badges = [
+  { label: "CBSE Aligned" },
+  { label: "ICSE Aligned" },
+  { label: "State Board" },
+];
+
+const trustItems = [
+  { value: "500+", label: "Schools Trust Us" },
+  { value: "1L+", label: "Students Learning" },
+  { value: "98%", label: "Homework Completion" },
+];
 
 const Hero = () => {
   return (
     <section
       id="home"
-      className="relative pt-32 pb-20 overflow-hidden min-h-screen flex items-center"
+      className="relative pt-28 pb-20 overflow-hidden min-h-screen flex items-center bg-gradient-to-br from-slate-50 via-blue-50/40 to-green-50/30"
     >
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-[#3ecf8e] opacity-5 dark:opacity-5 blur-[120px] rounded-full"></div>
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-[#3ecf8e] opacity-10 dark:opacity-10 blur-[120px] rounded-full"></div>
+      {/* Decorative blobs */}
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-green-400/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left column — copy */}
           <div className="space-y-8">
-            <div className="inline-flex items-center space-x-2 bg-[#3ecf8e]/10 border border-[#3ecf8e]/20 px-3 py-1 rounded-full text-[#3ecf8e] text-sm font-medium">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3ecf8e] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3ecf8e]"></span>
+            {/* Badge row */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 bg-blue-600/10 border border-blue-200 px-3 py-1 rounded-full text-blue-700 text-xs font-semibold uppercase tracking-wider">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600" />
+                </span>
+                AI-Powered School Platform
               </span>
-              <span>2025 Admissions are now open</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight">
-              Elevate Your <span className="text-[#3ecf8e]">Potential</span>,
-              Connect Your Future.
+            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+              The AI Learning Layer Your{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+                School Needs
+              </span>
             </h1>
 
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-xl">
-              Edunexus is a premier technology-driven university designed for
-              the next generation of innovators, engineers, and digital artists.
+            <p className="text-xl text-gray-600 max-w-xl leading-relaxed">
+              Give every student a safe AI tutor at home, help teachers create and check homework faster, and give schools real-time learning analytics.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <button className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-[#3ecf8e] text-black px-8 py-4 rounded-lg font-bold hover:bg-[#34b27b] transition-all transform hover:translate-y-[-2px] shadow-lg shadow-[#3ecf8e]/20">
-                <span>Start Application</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-transparent text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 hover:border-[#3ecf8e] px-8 py-4 rounded-lg font-bold transition-all">
-                <Play className="w-4 h-4 text-[#3ecf8e] fill-[#3ecf8e]" />
-                <span>Watch Virtual Tour</span>
-              </button>
+            {/* Board badges */}
+            <div className="flex flex-wrap gap-2">
+              {badges.map((b) => (
+                <span
+                  key={b.label}
+                  className="bg-white border border-gray-200 text-gray-600 text-xs font-medium px-3 py-1 rounded-full shadow-sm"
+                >
+                  {b.label}
+                </span>
+              ))}
             </div>
 
-            <div className="flex items-center space-x-6 pt-4 border-t border-gray-200 dark:border-gray-800">
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  12k+
-                </p>
-                <p className="text-sm text-gray-500">Active Students</p>
-              </div>
-              <div className="w-px h-8 bg-gray-200 dark:bg-gray-800"></div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  98%
-                </p>
-                <p className="text-sm text-gray-500">Graduate Hire Rate</p>
-              </div>
-              <div className="w-px h-8 bg-gray-200 dark:bg-gray-800"></div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  #1
-                </p>
-                <p className="text-sm text-gray-500">Tech Innovation</p>
-              </div>
+            {/* Key selling points */}
+            <ul className="space-y-3">
+              {[
+                "AI hints guide students — doesn't do homework for them",
+                "Teachers create & check homework 3× faster",
+                "Principals get live learning analytics",
+                "Parents see real progress, not just marks",
+              ].map((point) => (
+                <li key={point} className="flex items-start gap-3 text-gray-700">
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-sm font-medium">{point}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="#demo"
+                id="hero-book-demo"
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-blue-700 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-blue-500/30"
+              >
+                Book a School Demo
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href="#features"
+                id="hero-view-product"
+                className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 px-8 py-4 rounded-xl font-bold text-base hover:border-blue-300 hover:bg-blue-50 transition-all"
+              >
+                <Play className="w-4 h-4 text-blue-600 fill-blue-600" />
+                View Product
+              </a>
+            </div>
+
+            {/* Trust bar */}
+            <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-gray-200">
+              {trustItems.map((item, i) => (
+                <div key={i}>
+                  <p className="text-2xl font-extrabold text-gray-900">{item.value}</p>
+                  <p className="text-xs text-gray-500">{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* Right column — product preview card */}
           <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-2xl group">
-              <img
-                src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1200"
-                alt="Edunexus Modern Campus"
-                className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 dark:from-[#121212] via-transparent to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 dark:bg-[#1c1c1c]/90 backdrop-blur-md rounded-xl border border-gray-200 dark:border-gray-700">
-                <p className="text-sm font-medium text-[#3ecf8e] mb-1 uppercase tracking-wider">
-                  Upcoming Event
-                </p>
-                <p className="text-lg font-bold text-gray-900 dark:text-white">
-                  Quantum Computing Workshop
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Join us on April 15th for an exclusive look into the future.
-                </p>
+            {/* Main card */}
+            <div className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-2xl bg-white">
+              {/* Card header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-white/20 p-1.5 rounded-lg">
+                      <BookOpen className="text-white w-4 h-4" />
+                    </div>
+                    <span className="text-white font-semibold text-sm">Student Dashboard</span>
+                  </div>
+                  <span className="bg-green-400 text-green-900 text-xs font-bold px-2 py-0.5 rounded-full">Live</span>
+                </div>
+                <p className="text-blue-100 text-xs">Class 7A · Mathematics · Due today</p>
+              </div>
+
+              {/* Homework card */}
+              <div className="p-5 space-y-4">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="font-bold text-gray-900 text-sm">Fractions Worksheet</p>
+                      <p className="text-xs text-gray-500">Chapter 5 · 10 Questions</p>
+                    </div>
+                    <span className="bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-0.5 rounded-full">Pending</span>
+                  </div>
+                  <div className="w-full bg-amber-200 rounded-full h-1.5">
+                    <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: "40%" }} />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">4 of 10 answered</p>
+                </div>
+
+                {/* AI Tutor bubble */}
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-blue-600 rounded-full p-1.5 flex-shrink-0">
+                      <Sparkles className="text-white w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-blue-800 mb-1">ClassMind AI Tutor</p>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        Let's think about this step by step. To add fractions, you first need to find a common denominator. What is the LCM of 4 and 6?
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-gray-100 rounded-lg px-3 py-2 text-xs text-gray-500">
+                    Ask a doubt...
+                  </div>
+                  <button className="bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg">
+                    Ask AI
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Floating Element */}
-            <div className="absolute -top-6 -right-6 bg-white dark:bg-[#1c1c1c] p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-xl hidden md:block animate-bounce-slow">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-[#3ecf8e] flex items-center justify-center">
-                  <ChevronRight className="text-black" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">New Research</p>
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">
-                    Carbon Neutral Campus
-                  </p>
-                </div>
+            {/* Floating badge — Teacher */}
+            <div className="absolute -top-5 -left-5 bg-white border border-gray-200 rounded-2xl shadow-xl p-3 hidden md:flex items-center gap-3">
+              <div className="bg-green-100 p-2 rounded-xl">
+                <Users className="text-green-600 w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-900">Mrs. Sharma</p>
+                <p className="text-[10px] text-gray-500">Created 3 assignments today</p>
+              </div>
+            </div>
+
+            {/* Floating badge — Completion */}
+            <div className="absolute -bottom-5 -right-5 bg-white border border-gray-200 rounded-2xl shadow-xl p-3 hidden md:flex items-center gap-3">
+              <div className="bg-blue-100 p-2 rounded-xl">
+                <CheckCircle className="text-blue-600 w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-900">Class 7A</p>
+                <p className="text-[10px] text-green-600 font-semibold">87% homework completed ↑</p>
               </div>
             </div>
           </div>

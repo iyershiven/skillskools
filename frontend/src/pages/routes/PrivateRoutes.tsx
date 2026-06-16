@@ -1,48 +1,44 @@
+import { useNavigate } from "react-router";
 import { useAuth } from "@/hooks/AuthProvider";
-import { Navigate, Outlet, useLocation } from "react-router";
-import { Loader2 } from "lucide-react"; // Optional: for loading spinner
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/AppSidebar";
+import type { UserRole } from "@/types";
+import { useEffect } from "react";
 
-const PrivateRoutes = () => {
-  const { loading, user, year } = useAuth();
-  const location = useLocation();
+const roleRedirect: Record<UserRole, string> = {
+  super_admin: "/super-admin/dashboard",
+  school_admin: "/admin/dashboard",
+  teacher: "/teacher/dashboard",
+  student: "/student/dashboard",
+  parent: "/parent/dashboard",
+};
 
-  if (loading) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+/**
+ * Redirects authenticated users to their role-specific dashboard.
+ * Unauthenticated users are sent to /login.
+ */
+const PrivateRoutes = ({ children, allowedRoles }: {
+  children: React.ReactNode;
+  allowedRoles?: UserRole[];
+}) => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (!year) {
-    // Scenario A: Admin needs to create a year
-    if (user.role === "admin") {
-      // CRITICAL: Only redirect if they are NOT ALREADY on the settings page.
-      // If we don't check this, it causes an infinite loop (Blank Page).
-      if (location.pathname !== "/settings/academic-years") {
-        return <Navigate to="/settings/academic-years" replace />;
-      }
-      // If they ARE on the settings page, we let code flow down to render the Sidebar/Outlet
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
     }
-    // Scenario B: Non-admins cannot use the system without an active year
-    else {
-      return <Navigate to="/login" replace />;
+    if (allowedRoles && !allowedRoles.includes(user.role)) {
+      // Redirect to their own dashboard if they try to access another role's route
+      const home = roleRedirect[user.role] || "/login";
+      navigate(home, { replace: true });
     }
-  }
-  return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  }, [user, loading, allowedRoles, navigate]);
+
+  if (loading || !user) return null;
+  if (allowedRoles && !allowedRoles.includes(user.role)) return null;
+
+  return <>{children}</>;
 };
 
 export default PrivateRoutes;
