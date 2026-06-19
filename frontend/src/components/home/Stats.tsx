@@ -21,32 +21,32 @@ const completionData = [
 const statCards = [
   {
     icon: TrendingUp,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    color: "text-primary",
+    bg: "bg-primary/10",
     title: "87%",
     label: "Avg. Homework Completion",
     sub: "+25% vs. before ClassMind",
   },
   {
     icon: Clock,
-    color: "text-green-600",
-    bg: "bg-green-50",
+    color: "text-secondary",
+    bg: "bg-secondary/10",
     title: "3×",
     label: "Faster Homework Creation",
     sub: "Teachers report on AI worksheets",
   },
   {
     icon: AlertCircle,
-    color: "text-amber-600",
-    bg: "bg-amber-50",
+    color: "text-accent",
+    bg: "bg-accent/10",
     title: "40%",
     label: "Drop in Weak-topic Gaps",
     sub: "After 6 weeks of AI tutoring",
   },
   {
     icon: Award,
-    color: "text-purple-600",
-    bg: "bg-purple-50",
+    color: "text-primary",
+    bg: "bg-primary/10",
     title: "9/10",
     label: "Parent Satisfaction Score",
     sub: "Progress visibility rating",
@@ -55,23 +55,23 @@ const statCards = [
 
 const Stats = () => {
   return (
-    <section id="stats" className="py-24 bg-slate-50">
+    <section id="stats" className="py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 space-y-4">
-          <span className="inline-block bg-green-50 text-green-700 border border-green-200 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+          <span className="inline-block bg-primary/10 text-primary border border-primary/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
             Real Results
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Schools see results within weeks
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
             ClassMind AI improves homework completion, reduces teacher workload, and identifies learning gaps early.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Chart */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+          <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-100 p-8 shadow-sm">
             <div className="mb-6">
               <h3 className="text-xl font-bold text-gray-900">Homework Completion Rate</h3>
               <p className="text-sm text-gray-500 mt-1">6-week trend after ClassMind AI adoption</p>
@@ -81,12 +81,12 @@ const Stats = () => {
                 <AreaChart data={completionData}>
                   <defs>
                     <linearGradient id="completionGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#5B2EFF" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#5B2EFF" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.15} />
-                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#FF8A00" stopOpacity={0.15} />
+                      <stop offset="95%" stopColor="#FF8A00" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -105,7 +105,7 @@ const Stats = () => {
                     type="monotone"
                     dataKey="completion"
                     name="Homework Completion %"
-                    stroke="#2563eb"
+                    stroke="#5B2EFF"
                     fillOpacity={1}
                     fill="url(#completionGrad)"
                     strokeWidth={2.5}
@@ -114,7 +114,7 @@ const Stats = () => {
                     type="monotone"
                     dataKey="aiUsage"
                     name="AI Tutor Usage %"
-                    stroke="#16a34a"
+                    stroke="#FF8A00"
                     fillOpacity={1}
                     fill="url(#aiGrad)"
                     strokeWidth={2.5}
@@ -124,12 +124,12 @@ const Stats = () => {
             </div>
             <div className="flex flex-wrap gap-4 mt-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-600" />
-                <span className="text-xs text-gray-500">Homework Completion %</span>
+                <div className="w-3 h-3 rounded-full bg-primary" />
+                <span className="text-xs text-gray-500 font-medium">Homework Completion %</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-600" />
-                <span className="text-xs text-gray-500">AI Tutor Usage %</span>
+                <div className="w-3 h-3 rounded-full bg-secondary" />
+                <span className="text-xs text-gray-500 font-medium">AI Tutor Usage %</span>
               </div>
             </div>
           </div>
@@ -139,15 +139,15 @@ const Stats = () => {
             {statCards.map((card, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:border-blue-200 hover:shadow-md transition-all flex items-start gap-4"
+                className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:border-primary/20 hover:shadow-md hover:-translate-y-1 transition-all flex items-start gap-4"
               >
-                <div className={`p-2.5 rounded-xl ${card.bg} flex-shrink-0`}>
-                  <card.icon className={`w-5 h-5 ${card.color}`} />
+                <div className={`p-3 rounded-2xl ${card.bg} flex-shrink-0`}>
+                  <card.icon className={`w-6 h-6 ${card.color}`} />
                 </div>
                 <div>
-                  <p className="text-2xl font-extrabold text-gray-900">{card.title}</p>
-                  <p className="text-sm font-semibold text-gray-700 leading-snug">{card.label}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{card.sub}</p>
+                  <p className="text-3xl font-black text-gray-900">{card.title}</p>
+                  <p className="text-sm font-semibold text-gray-700 leading-snug mt-1">{card.label}</p>
+                  <p className="text-xs text-gray-400 mt-1">{card.sub}</p>
                 </div>
               </div>
             ))}

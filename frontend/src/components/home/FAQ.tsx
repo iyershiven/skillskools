@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MessageCircleQuestion } from "lucide-react";
 
 const faqs = [
   {
@@ -36,43 +36,44 @@ const FAQ = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 bg-slate-50">
+    <section id="faq" className="py-24 bg-muted/30">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14 space-y-4">
-          <span className="inline-block bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+            <MessageCircleQuestion className="w-4 h-4" />
             FAQ
           </span>
-          <h2 className="text-4xl font-extrabold text-gray-900">
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
             Questions from schools
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-500 text-lg leading-relaxed">
             Everything school admins and principals ask before signing up.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {faqs.map((faq, idx) => (
             <div
               key={idx}
-              className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden ${
-                openIdx === idx ? "border-blue-200 shadow-md" : "border-gray-100 shadow-sm"
+              className={`bg-white rounded-[2rem] border transition-all duration-300 overflow-hidden ${
+                openIdx === idx ? "border-primary/30 shadow-lg shadow-primary/5" : "border-gray-100 shadow-sm hover:border-primary/20 hover:shadow-md"
               }`}
             >
               <button
                 id={`faq-toggle-${idx}`}
                 onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                className="w-full flex items-center justify-between px-6 py-5 text-left"
+                className="w-full flex items-center justify-between px-8 py-6 text-left"
               >
-                <span className="font-semibold text-gray-900 text-sm">{faq.q}</span>
+                <span className="font-bold text-gray-900 text-base">{faq.q}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-400 flex-shrink-0 ml-4 transition-transform duration-200 ${
-                    openIdx === idx ? "rotate-180 text-blue-600" : ""
+                  className={`w-5 h-5 flex-shrink-0 ml-4 transition-transform duration-300 ${
+                    openIdx === idx ? "rotate-180 text-primary" : "text-gray-400"
                   }`}
                 />
               </button>
               {openIdx === idx && (
-                <div className="px-6 pb-5">
-                  <p className="text-gray-600 text-sm leading-relaxed">{faq.a}</p>
+                <div className="px-8 pb-6 animate-in slide-in-from-top-2 fade-in duration-300">
+                  <p className="text-gray-500 text-sm leading-relaxed">{faq.a}</p>
                 </div>
               )}
             </div>

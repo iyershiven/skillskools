@@ -69,67 +69,67 @@ const plans = [
 
 const Pricing = () => {
   return (
-    <section id="pricing" className="py-24 bg-white">
+    <section id="pricing" className="py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">
-          <span className="inline-block bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
+          <span className="inline-block bg-primary/10 text-primary border border-primary/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
             Simple Pricing
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
             Annual school subscriptions
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
             One flat annual fee for your entire school. No per-student billing surprises.
           </p>
         </div>
 
         {/* Pricing cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl p-8 flex flex-col transition-all duration-300 ${
+              className={`relative rounded-3xl p-8 flex flex-col transition-all duration-300 ${
                 plan.highlight
-                  ? "bg-gradient-to-b from-blue-600 to-blue-700 text-white shadow-2xl shadow-blue-500/30 scale-105 border-0"
-                  : "bg-white border border-gray-200 hover:border-blue-200 hover:shadow-lg shadow-sm"
+                  ? "bg-primary text-white shadow-2xl shadow-primary/30 scale-105 border-0"
+                  : "bg-white border border-gray-100 hover:border-primary/20 hover:shadow-xl shadow-sm"
               }`}
             >
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="flex items-center gap-1.5 bg-amber-400 text-amber-900 text-xs font-bold px-4 py-1.5 rounded-full shadow-md whitespace-nowrap">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <span className="flex items-center gap-1.5 bg-secondary text-white text-xs font-bold px-5 py-2 rounded-full shadow-lg whitespace-nowrap">
+                    <Sparkles className="w-4 h-4 text-white" />
                     {plan.badge}
                   </span>
                 </div>
               )}
 
-              <div className="mb-6">
-                <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${plan.highlight ? "text-blue-200" : "text-blue-600"}`}>
+              <div className="mb-8">
+                <p className={`text-xs font-bold uppercase tracking-widest mb-3 ${plan.highlight ? "text-white/80" : "text-primary"}`}>
                   {plan.name}
                 </p>
-                <div className="flex items-end gap-1 mb-2">
-                  <span className={`text-4xl font-extrabold ${plan.highlight ? "text-white" : "text-gray-900"}`}>
+                <div className="flex items-end gap-1 mb-3">
+                  <span className={`text-5xl font-extrabold tracking-tight ${plan.highlight ? "text-white" : "text-gray-900"}`}>
                     {plan.price}
                   </span>
                   {plan.period && (
-                    <span className={`text-sm font-medium mb-1 ${plan.highlight ? "text-blue-200" : "text-gray-500"}`}>
+                    <span className={`text-sm font-medium mb-1.5 ${plan.highlight ? "text-white/80" : "text-gray-500"}`}>
                       {plan.period}
                     </span>
                   )}
                 </div>
-                <p className={`text-sm ${plan.highlight ? "text-blue-100" : "text-gray-500"}`}>
+                <p className={`text-sm leading-relaxed ${plan.highlight ? "text-white/90" : "text-gray-500"}`}>
                   {plan.tagline}
                 </p>
               </div>
 
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-4 mb-10 flex-1">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-3">
-                    <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${plan.highlight ? "bg-white/20" : "bg-green-50"}`}>
-                      <Check className={`w-3 h-3 ${plan.highlight ? "text-white" : "text-green-600"}`} />
+                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${plan.highlight ? "bg-white/20" : "bg-primary/10"}`}>
+                      <Check className={`w-3.5 h-3.5 ${plan.highlight ? "text-white" : "text-primary"}`} />
                     </div>
-                    <span className={`text-sm ${plan.highlight ? "text-blue-50" : "text-gray-600"}`}>
+                    <span className={`text-sm font-medium ${plan.highlight ? "text-white/95" : "text-gray-600"}`}>
                       {feature}
                     </span>
                   </li>
@@ -139,10 +139,10 @@ const Pricing = () => {
               <a
                 href={plan.ctaLink}
                 id={`pricing-cta-${plan.name.toLowerCase()}`}
-                className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-bold text-sm transition-all ${
+                className={`flex items-center justify-center gap-2 w-full py-4 rounded-full font-bold text-sm transition-all shadow-md transform hover:-translate-y-0.5 ${
                   plan.highlight
-                    ? "bg-white text-blue-700 hover:bg-blue-50"
-                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20"
+                    ? "bg-white text-primary hover:bg-gray-50"
+                    : "bg-primary text-white hover:bg-primary/90 shadow-primary/20"
                 }`}
               >
                 {plan.cta}
@@ -153,7 +153,7 @@ const Pricing = () => {
         </div>
 
         {/* Trust note */}
-        <p className="text-center text-sm text-gray-400 mt-10">
+        <p className="text-center text-sm text-gray-500 mt-12 font-medium">
           All plans include a 30-day free pilot period · No setup fees · Cancel before renewal
         </p>
       </div>

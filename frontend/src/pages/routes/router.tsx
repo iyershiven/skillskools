@@ -17,6 +17,9 @@ import TeacherHomeworkPage from "@/pages/teacher/TeacherHomeworkPage";
 import SchoolAdminDashboard from "@/pages/admin/SchoolAdminDashboard";
 import ParentDashboard from "@/pages/parent/ParentDashboard";
 import SuperAdminDashboard from "@/pages/superadmin/SuperAdminDashboard";
+import SuperAdminPlans from "@/pages/superadmin/SuperAdminPlans";
+import SuperAdminUsage from "@/pages/superadmin/SuperAdminUsage";
+import SuperAdminSettings from "@/pages/superadmin/SuperAdminSettings";
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +105,30 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes allowedRoles={["super_admin"]}>
             <SuperAdminDashboard />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "super-admin/plans",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin"]}>
+            <SuperAdminPlans />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "super-admin/usage",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin"]}>
+            <SuperAdminUsage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "super-admin/settings",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin"]}>
+            <SuperAdminSettings />
           </PrivateRoutes>
         ),
       },
