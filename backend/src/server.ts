@@ -20,6 +20,12 @@ import analyticsRouter from "./routes/analytics.ts";
 import homeworkRouter from "./routes/homework.ts";
 import aiRouter from "./routes/ai.ts";
 
+// Multi-School Features
+import diaryRouter from "./routes/diary.ts";
+import leaderboardRouter from "./routes/leaderboard.ts";
+import noticeRouter from "./routes/notice.ts";
+import queryRouter from "./routes/query.ts";
+
 // Inngest background jobs
 import { serve } from "inngest/express";
 import { inngest } from "./inngest/index.ts";
@@ -113,6 +119,12 @@ app.use("/api/subjects", subjectRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/homework", homeworkRouter);
 app.use("/api/ai", aiRouter);
+
+// Multi-School Features
+app.use("/api/diary", diaryRouter);
+app.use("/api/leaderboard", leaderboardRouter);
+app.use("/api/notices", noticeRouter);
+app.use("/api/queries", queryRouter);
 
 // Inngest background job handler
 app.use(

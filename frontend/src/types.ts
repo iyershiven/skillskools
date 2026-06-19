@@ -2,7 +2,10 @@
 export type UserRole =
   | "super_admin"
   | "school_admin"
+  | "principal"
   | "teacher"
+  | "class_teacher"
+  | "subject_teacher"
   | "student"
   | "parent";
 

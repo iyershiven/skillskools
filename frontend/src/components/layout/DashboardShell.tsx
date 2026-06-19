@@ -17,12 +17,12 @@ interface NavItem {
 }
 
 interface DashboardShellProps {
-  navItems: NavItem[];
+  navItems?: NavItem[];
   children: React.ReactNode;
   title?: string;
 }
 
-const DashboardShell = ({ navItems, children, title }: DashboardShellProps) => {
+const DashboardShell = ({ navItems = [], children, title }: DashboardShellProps) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();

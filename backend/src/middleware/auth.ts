@@ -8,7 +8,7 @@ export interface IProfile {
   school_id: string | null;
   full_name: string;
   email: string;
-  role: "super_admin" | "school_admin" | "teacher" | "student" | "parent";
+  role: "super_admin" | "school_admin" | "principal" | "teacher" | "class_teacher" | "subject_teacher" | "student" | "parent";
 }
 
 export interface AuthRequest extends Request {

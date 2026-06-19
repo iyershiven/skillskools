@@ -60,45 +60,42 @@ export const sidebardata = {
       url: "/dashboard",
       icon: LayoutDashboard,
       isActive: true,
-      roles: ["admin", "teacher", "student", "parent"],
+      roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"],
       items: [
         {
           title: "Dashboard",
           url: "/dashboard",
-          roles: ["admin", "teacher", "student", "parent"],
         },
         {
           title: "Activities Log",
           url: "/activies-log",
-          roles: ["admin"], // Restricted to Admin
+          roles: ["super_admin", "school_admin", "principal"],
         },
       ],
     },
     {
       title: "Academics",
-      url: "#", // Parent item, no link
+      url: "#",
       icon: School,
-      roles: ["admin", "teacher", "student", "parent"],
+      roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"],
       items: [
         {
           title: "Classes",
           url: "/classes",
-          roles: ["admin", "teacher"],
+          roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher"],
         },
         {
           title: "Subjects",
           url: "/subjects",
-          roles: ["admin", "teacher"],
+          roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher"],
         },
         {
           title: "Timetable",
           url: "/timetable",
-          // Everyone needs to see the schedule
         },
         {
           title: "Attendance",
           url: "/attendance",
-          // Parents want to see if their kid was present
         },
       ],
     },
@@ -106,34 +103,47 @@ export const sidebardata = {
       title: "Learning (LMS)",
       url: "#",
       icon: GraduationCap,
-      roles: ["teacher", "student", "admin"], // Parents usually don't need deep LMS access
+      roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"],
       items: [
         { title: "Assignments", url: "/lms/assignments" },
         { title: "Exams", url: "/lms/exams" },
         { title: "Study Materials", url: "/lms/materials" },
+        { title: "Digital Diary", url: "/lms/diary" },
+      ],
+    },
+    {
+      title: "Engagement",
+      url: "#",
+      icon: Users,
+      roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"],
+      items: [
+        { title: "Student Leaderboard", url: "/leaderboard/students" },
+        { title: "House Leaderboard", url: "/leaderboard/houses" },
+        { title: "Noticeboard", url: "/noticeboard" },
+        { title: "Parent Queries", url: "/queries", roles: ["super_admin", "school_admin", "principal", "parent"] },
       ],
     },
     {
       title: "People",
       url: "#",
       icon: Users,
-      roles: ["admin", "teacher"],
+      roles: ["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher"],
       items: [
         { title: "Students", url: "/users/students" },
         {
           title: "Teachers",
           url: "/users/teachers",
-          roles: ["admin"], // Only Admin can see other Admins
+          roles: ["super_admin", "school_admin", "principal"],
         },
         {
           title: "Parents",
           url: "/users/parents",
-          roles: ["admin"], // Only Admin can see other Admins
+          roles: ["super_admin", "school_admin", "principal"],
         },
         {
           title: "Admins",
           url: "/users/admins",
-          roles: ["admin"], // Only Admin can see other Admins
+          roles: ["super_admin", "school_admin"],
         },
       ],
     },
@@ -141,7 +151,7 @@ export const sidebardata = {
       title: "Finance",
       url: "#",
       icon: Banknote,
-      roles: ["admin"],
+      roles: ["super_admin", "school_admin", "principal"],
       items: [
         { title: "Fee Collection", url: "/finance/fees" },
         { title: "Expenses", url: "/finance/expenses" },
@@ -152,9 +162,9 @@ export const sidebardata = {
       title: "System",
       url: "#",
       icon: Settings2,
-      roles: ["admin"],
+      roles: ["super_admin", "school_admin", "principal"],
       items: [
-        { title: "School Settings", url: "/settings/general" }, // Added to match router
+        { title: "School Settings", url: "/settings/general" },
         { title: "Academic Years", url: "/settings/academic-years" },
         { title: "Roles & Permissions", url: "/settings/roles" },
       ],
@@ -163,7 +173,7 @@ export const sidebardata = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, year, setUser } = useAuth();
+  const { user, setUser } = useAuth();
   const location = useLocation(); // <--- Get current URL
   const pathname = location.pathname; // e.g., "/dashboard/analytics"
   const { state } = useSidebar();
@@ -214,7 +224,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={sidebardata.teams} yearName={year?.name!} />
+        <TeamSwitcher teams={sidebardata.teams} yearName="2024-2025" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={filteredNav} />

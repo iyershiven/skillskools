@@ -10,7 +10,10 @@ import type { UserRole } from "@/types";
 const roleRedirect: Record<UserRole, string> = {
   super_admin: "/super-admin/dashboard",
   school_admin: "/admin/dashboard",
+  principal: "/principal/dashboard",
   teacher: "/teacher/dashboard",
+  class_teacher: "/classteacher/dashboard",
+  subject_teacher: "/subjectteacher/dashboard",
   student: "/student/dashboard",
   parent: "/parent/dashboard",
 };

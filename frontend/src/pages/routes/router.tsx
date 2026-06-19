@@ -21,12 +21,20 @@ import SuperAdminPlans from "@/pages/superadmin/SuperAdminPlans";
 import SuperAdminUsage from "@/pages/superadmin/SuperAdminUsage";
 import SuperAdminSettings from "@/pages/superadmin/SuperAdminSettings";
 
+// New modules
+import Noticeboard from "@/pages/Noticeboard";
+import StudentLeaderboard from "@/pages/leaderboard/StudentLeaderboard";
+import HouseLeaderboard from "@/pages/leaderboard/HouseLeaderboard";
+import DigitalDiary from "@/pages/diary/DigitalDiary";
+import ParentQueries from "@/pages/queries/ParentQueries";
+
 export const router = createBrowserRouter([
   {
     children: [
       // ── Public routes ──────────────────────────────────────────────────────
       { index: true, element: <Home /> },
       { path: "login", element: <Login /> },
+      { path: "login/:role", element: <Login /> },
 
       // ── Student routes ─────────────────────────────────────────────────────
       {
@@ -88,6 +96,33 @@ export const router = createBrowserRouter([
           </PrivateRoutes>
         ),
       },
+      // ── Principal routes ────────────────────────────────────────────────
+      {
+        path: "principal/dashboard",
+        element: (
+          <PrivateRoutes allowedRoles={["principal", "school_admin"]}>
+            <div className="p-8">Principal Dashboard</div>
+          </PrivateRoutes>
+        ),
+      },
+      // ── Class Teacher routes ───────────────────────────────────────────────
+      {
+        path: "classteacher/dashboard",
+        element: (
+          <PrivateRoutes allowedRoles={["class_teacher"]}>
+            <div className="p-8">Class Teacher Dashboard</div>
+          </PrivateRoutes>
+        ),
+      },
+      // ── Subject Teacher routes ─────────────────────────────────────────────
+      {
+        path: "subjectteacher/dashboard",
+        element: (
+          <PrivateRoutes allowedRoles={["subject_teacher"]}>
+            <div className="p-8">Subject Teacher Dashboard</div>
+          </PrivateRoutes>
+        ),
+      },
 
       // ── Parent routes ──────────────────────────────────────────────────────
       {
@@ -129,6 +164,47 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes allowedRoles={["super_admin"]}>
             <SuperAdminSettings />
+          </PrivateRoutes>
+        ),
+      },
+      // ── Engagement & New Modules ───────────────────────────────────────────
+      {
+        path: "noticeboard",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"]}>
+            <Noticeboard />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "leaderboard/students",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"]}>
+            <StudentLeaderboard />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "leaderboard/houses",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"]}>
+            <HouseLeaderboard />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "lms/diary",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin", "school_admin", "principal", "teacher", "class_teacher", "subject_teacher", "student", "parent"]}>
+            <DigitalDiary />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "queries",
+        element: (
+          <PrivateRoutes allowedRoles={["super_admin", "school_admin", "principal", "parent"]}>
+            <ParentQueries />
           </PrivateRoutes>
         ),
       },
