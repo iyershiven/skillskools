@@ -1,11 +1,11 @@
 import DashboardShell from "@/components/layout/DashboardShell";
-import { CreditCard, Check, Building2 } from "lucide-react";
+import { CreditCard, Check, Building2, Activity, Settings } from "lucide-react";
 
 const navItems = [
   { label: "Schools", href: "/super-admin/dashboard", icon: Building2 },
   { label: "Plans", href: "/super-admin/plans", icon: CreditCard },
-  { label: "Usage", href: "/super-admin/usage", icon: () => <span className="mr-3">📈</span> }, // Use Activity when we import it, or just use emoji for now since we didn't export Activity
-  { label: "Settings", href: "/super-admin/settings", icon: () => <span className="mr-3">⚙️</span> },
+  { label: "Usage", href: "/super-admin/usage", icon: Activity },
+  { label: "Settings", href: "/super-admin/settings", icon: Settings },
 ];
 
 const plans = [

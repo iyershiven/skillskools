@@ -1,5 +1,5 @@
 import DashboardShell from "@/components/layout/DashboardShell";
-import { CreditCard, Building2, Activity, Settings, Key, Globe, Mail, ShieldAlert } from "lucide-react";
+import { CreditCard, Building2, Activity, Settings, Key, Mail, ShieldAlert } from "lucide-react";
 
 const navItems = [
   { label: "Schools", href: "/super-admin/dashboard", icon: Building2 },
