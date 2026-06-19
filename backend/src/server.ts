@@ -15,9 +15,10 @@ import userRoutes from "./routes/user.ts";
 import classRouter from "./routes/class.ts";
 import subjectRouter from "./routes/subject.ts";
 
-// Analytics & Homework
+// Analytics, Homework, & AI
 import analyticsRouter from "./routes/analytics.ts";
 import homeworkRouter from "./routes/homework.ts";
+import aiRouter from "./routes/ai.ts";
 
 // Inngest background jobs
 import { serve } from "inngest/express";
@@ -36,9 +37,22 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 
 // CORS: allow frontend origin with credentials
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -95,9 +109,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/classes", classRouter);
 app.use("/api/subjects", subjectRouter);
 
-// Analytics & Homework
+// Analytics, Homework, & AI
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/homework", homeworkRouter);
+app.use("/api/ai", aiRouter);
 
 // Inngest background job handler
 app.use(
@@ -122,3 +137,6 @@ app.use((err: Error, _req: Request, res: Response, _next: Function) => {
 app.listen(PORT, () => {
   console.log(`🚀 ClassMind AI Server running on port ${PORT}`);
 });
+
+// Keep process alive since app.listen seems to exit immediately
+setInterval(() => {}, 1000 * 60 * 60);

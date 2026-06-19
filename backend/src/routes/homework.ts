@@ -6,6 +6,7 @@ import {
   toggleHomeworkStatus,
   submitHomework,
   getHomeworkResult,
+  getHomeworkSubmissions,
 } from "../controllers/homework.ts";
 import { protect, authorize } from "../middleware/auth.ts";
 
@@ -38,5 +39,13 @@ router.post("/:id/submit", protect, authorize(["student"]), submitHomework);
 
 // View student result
 router.get("/:id/result", protect, authorize(["student"]), getHomeworkResult);
+
+// View all submissions (Teacher)
+router.get(
+  "/:id/submissions",
+  protect,
+  authorize(["super_admin", "school_admin", "teacher"]),
+  getHomeworkSubmissions
+);
 
 export default router;

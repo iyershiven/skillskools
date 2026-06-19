@@ -238,3 +238,47 @@ export const getHomeworkResult = async (req: AuthRequest, res: Response): Promis
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Get All Submissions for Homework (For Teacher)
+// @route   GET /api/homework/:id/submissions
+export const getHomeworkSubmissions = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const homeworkId = req.params.id;
+    const teacherId = req.user?.id;
+
+    // Verify ownership
+    const { data: homework } = await supabaseAdmin
+      .from("homework")
+      .select("id")
+      .eq("id", homeworkId)
+      .eq("teacher_id", teacherId)
+      .single();
+
+    if (!homework) {
+      res.status(403).json({ message: "Not authorized to view these submissions." });
+      return;
+    }
+
+    const { data: submissions, error } = await supabaseAdmin
+      .from("homework_submissions")
+      .select(`
+        id,
+        status,
+        score,
+        created_at,
+        students!inner(
+          users!inner(name, email)
+        )
+      `)
+      .eq("homework_id", homeworkId);
+
+    if (error) {
+      res.status(400).json({ message: "Error fetching submissions", error: error.message });
+      return;
+    }
+
+    res.json(submissions);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
